@@ -133,7 +133,7 @@ The note_tool is designed with simplicity and modularity in mind. Here’s how i
 
 
 ### Automated Monthly Segregation
-To automate monthly segregation, you can set up a cron job. Run crontab -e and add:
+To automate monthly segregation, you can set up a cron job. Run `crontab -e` and add:
 ```bash
 0 0 1 * * ~/.local/bin/note_tool.sh segregate
 ```

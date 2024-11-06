@@ -6,6 +6,11 @@ The Note Tool is a no-frills, command-line solution for those busy workdays when
 
 Your notes are all in one file, and with on-demand or automatic monthly segregation (via cron job), you can keep a structured history of your work, like a digital stack of notepaper. Whether it’s to revisit later or track your daily progress, Note Tool keeps your notes accessible and organized.
 
+![Tool Demo](/demo.png)
+
+**The lines are added to the file**
+![Output Demo](/demo2.png)
+
 ## Table of Contents
 - [Note Tool: Quick and Simple Command-Line Note-Taking](#note-tool-quick-and-simple-command-line-note-taking)
   - [Table of Contents](#table-of-contents)

@@ -11,29 +11,27 @@ touch "$NOTES_FILE"
 show_help() {
     echo "Note Tool - Command Line Note-Taking Application"
     echo
-    echo "Usage:"
-    echo "  Main Commands:"
-    echo "    $0 add + return                - Add a new note"
-    echo "    $0 segregate                   - Segregate notes by month and year"
-    echo "    $0 view main                   - View main notes file"
-    echo "    $0 view YYYY MM                - View notes for a specific year and month (e.g., $0 view 2024 11)"
-    echo "    $0 help                        - Show this help message"
+    echo "Usage: note [options]"
     echo
-    echo "  Aliases for Quick Commands:"
-    echo "    note + return                  - Quickly add a new note"
-    echo "    shownotes                      - Quickly view the main notes file"
-    echo "    shownotes_month YYYY MM        - Quickly view notes for a specific year and month"
-    echo "    segregatenotes                 - Quickly segregate notes by month and year"
-    echo "    notehelp                       - Show this help message with alias information"
+    echo "Options:"
+    echo "  -a                Add a new note interactively"
+    echo "  -v main           View main notes file"
+    echo "  -v YYYY MM        View notes for a specific year and month (e.g., -v 2024 11)"
+    echo "  -s                Segregate notes by month and year"
+    echo "  -h                Show this help message"
 }
 
 # Function to add a new note
 add_note() {
     TIMESTAMP=$(date +"%d %B %Y at %H:%M")
-    NOTE="$1"
-    # Prompt for the note
-    echo "Write your note below and hit enter (empty is not included):"
-    read NOTE
+
+    # Prompt for the note if not provided as an argument
+    if [ -z "$1" ]; then
+        echo "Write your note below and press Enter (leave empty to cancel):"
+        read -r NOTE
+    else
+        NOTE="$1"
+    fi
 
     if [ -n "$NOTE" ]; then
         echo "$TIMESTAMP --> $NOTE" | cat - "$NOTES_FILE" > temp && mv temp "$NOTES_FILE"
@@ -46,39 +44,50 @@ add_note() {
 # Function to segregate notes by month and year
 segregate_notes() {
     mkdir -p "$SEGREGATED_DIR"
-
-    while IFS= read -r line || [ -n "$line" ]; do
-        DATE_PART=$(echo "$line" | grep -oE '^[0-9]+ [A-Za-z]+ [0-9]{4}')
-        NOTE_CONTENT=$(echo "$line" | sed 's/^[^>]*--> //')
-
-        if [ -n "$DATE_PART" ]; then
-            DAY=$(echo "$DATE_PART" | awk '{print $1}')
-            MONTH_NAME=$(echo "$DATE_PART" | awk '{print $2}')
-            YEAR=$(echo "$DATE_PART" | awk '{print $3}')
-
-            case "$MONTH_NAME" in
-                "January") MONTH_NUM="01" ;;
-                "February") MONTH_NUM="02" ;;
-                "March") MONTH_NUM="03" ;;
-                "April") MONTH_NUM="04" ;;
-                "May") MONTH_NUM="05" ;;
-                "June") MONTH_NUM="06" ;;
-                "July") MONTH_NUM="07" ;;
-                "August") MONTH_NUM="08" ;;
-                "September") MONTH_NUM="09" ;;
-                "October") MONTH_NUM="10" ;;
-                "November") MONTH_NUM="11" ;;
-                "December") MONTH_NUM="12" ;;
-                *) MONTH_NUM="" ;;
-            esac
-
-            if [ -n "$MONTH_NUM" ]; then
-                OUTPUT_FILE="$SEGREGATED_DIR/${YEAR}-${MONTH_NUM}_notes.txt"
-                echo "$line" >> "$OUTPUT_FILE"
-            fi
-        fi
-    done < <(cat "$NOTES_FILE"; echo)
     
+    awk -v dir="$SEGREGATED_DIR" '
+    function get_month_number(month) {
+        if (month == "January") return "01"
+        else if (month == "February") return "02"
+        else if (month == "March") return "03"
+        else if (month == "April") return "04"
+        else if (month == "May") return "05"
+        else if (month == "June") return "06"
+        else if (month == "July") return "07"
+        else if (month == "August") return "08"
+        else if (month == "September") return "09"
+        else if (month == "October") return "10"
+        else if (month == "November") return "11"
+        else if (month == "December") return "12"
+        else return "00"
+    }
+
+    /^[0-9]{2} [A-Za-z]+ [0-9]{4} at [0-9]{2}:[0-9]{2} -->/ {
+        if (note) {
+            print note "\n" > output_file
+            close(output_file)
+        }
+        
+        split($0, timestamp, " ")
+        month = timestamp[2]
+        year = timestamp[3]
+        month_num = get_month_number(month)
+        output_file = dir "/" year "-" month_num "_notes.txt"
+        note = $0 "\n"
+        next
+    }
+    
+    {
+        note = note $0 "\n"
+    }
+    
+    END {
+        if (note) {
+            print note "\n" >> output_file
+            close(output_file)
+        }
+    }' "$NOTES_FILE"
+
     echo "Notes have been segregated by month and saved in $SEGREGATED_DIR."
 }
 
@@ -100,27 +109,26 @@ view_notes() {
     fi
 }
 
-# Parse command-line arguments
-case "$1" in
-    "add")
-        shift
-        add_note "$*"
-        ;;
-    "segregate")
-        segregate_notes
-        ;;
-    "view")
-        shift
-        if [ "$1" == "main" ]; then
+
+# Parse command-line options
+while getopts "av:sh" option; do
+    case $option in
+        a) add_note ;;
+        v)
+            shift
+            if [ "$1" == "main" ]; then
             view_notes "main"
-        else
+            else
             view_notes "$1" "$2"
-        fi
-        ;;
-    "help"|"--help"|"-h")
-        show_help
-        ;;
-    *)
-        # echo "Invalid command. Use '$0 help' for usage instructions."
-        # ;;
-esac
+            fi
+            ;;
+        s) segregate_notes ;;
+        h) show_help ;;
+        *) echo "Invalid option. Use '-h' for help."; exit 1 ;;
+    esac
+done
+
+# Show help if no options are provided
+if [ $OPTIND -eq 1 ]; then
+    show_help
+fi

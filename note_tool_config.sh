@@ -14,9 +14,5 @@ NOTE_TOOL_PATH="$HOME/Documents/Notes/.bin/note_tool.sh"  # Update this if you s
 export NOTES_FILE_PATH
 export SEGREGATED_NOTES_DIR
 
-# Aliases for quick commands
-alias note="$NOTE_TOOL_PATH add"
-alias shownotes="$NOTE_TOOL_PATH view main"
-alias shownotes_month="$NOTE_TOOL_PATH view"
-alias segregatenotes="$NOTE_TOOL_PATH segregate"
-alias notehelp="$NOTE_TOOL_PATH show_help"
+# Single alias for using the tool with options
+alias note="$NOTE_TOOL_PATH"

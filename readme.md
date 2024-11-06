@@ -18,7 +18,6 @@ Your notes are all in one file, and with on-demand or automatic monthly segregat
     - [Directory Structure](#directory-structure)
     - [Commands and Usage](#commands-and-usage)
     - [Tool Design and Working](#tool-design-and-working)
-    - [Examples](#examples)
     - [Automated Monthly Segregation](#automated-monthly-segregation)
     - [License](#license)
     - [Remarks](#remarks)
@@ -62,7 +61,7 @@ Once set up, you can use the following alias commands:
 
 To add a note quickly, use:
 ```bash
-note
+note -a + enter "This is a new note"
 ```
 and hit `enter`. Then type your note in a single line. Empty line + `enter` does not add anything to the file.
 
@@ -73,18 +72,18 @@ View All Notes in the Main File
 To view the main notes file:
 
 ```bash
-shownotes
+note -v main
 ```
 3. **View Notes for a Specific Month**
 
 To view notes from a specific year and month:
 
 ```bash
-shownotes_month YYYY MM
+note -v YYYY MM
 ```
 **Example**
 ```bash
-shownotes_month 2024 11
+note -v 2024 11
 ```
 This displays notes from November 2024 in the sorted folder.
 
@@ -92,7 +91,7 @@ This displays notes from November 2024 in the sorted folder.
 
 To organize the main notes file into monthly files, use
 ```bash
-segregatenotes
+note -s
 ```
 This command creates monthly files (e.g., 2024-11_notes.txt) in the sorted folder, containing notes only from the specified month.
 
@@ -105,7 +104,7 @@ source ~/.bashrc  # or source ~/.zshrc if using Zsh
 5. **See Commands**
    
 ```bash
-notehelp
+note -h
 ```
 Shows the available commands and included aliases
 
@@ -130,33 +129,6 @@ The note_tool is designed with simplicity and modularity in mind. Here’s how i
 	•	Creates the required directory structure and README file.
 	•	Sets up configuration by copying note_tool_config.sh and linking it in .bashrc or .zshrc.
 
-### Examples
-
-**Example 1: Adding a Note**
-```bash
-note + enter
-```
-    This is a sample note for my project update
-
-_Output: The note is added to notes.txt in the main folder with a timestamp, e.g., 05 November 2024 at 09:45 --> This is a sample note for my project update._
-
-**Example 2: Viewing All Notes**
-```bash
-shownotes
-```
-_Output: Displays the entire contents of notes.txt, with the most recent note at the top._
-
-**Example 3: Viewing Notes for a Specific Month**
-```bash
-shownotes_month 2024 11
-```
-_Output: Shows notes for November 2024 from the file 2024-11_notes.txt in the sorted folder._
-
-**Example 4: Segregating Notes by Month**
-```bash
-segregatenotes
-```
-_Output: Creates files like 2024-11_notes.txt in the sorted folder, organizing notes by month and year._
 
 ### Automated Monthly Segregation
 To automate monthly segregation, you can set up a cron job. Run crontab -e and add:

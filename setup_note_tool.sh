@@ -12,6 +12,9 @@ mkdir -p "$NOTES_DIRECTORY/main" "$SEGREGATED_NOTES_DIR" "$NOTES_DIRECTORY/.bin"
 
 # Create a README file explaining the directory structure
 cat <<EOL > "$NOTES_DIRECTORY/README.txt"
+Note Tool - Command Line Note-Taking Application
+Author: Ravi Umadi, 2024
+
 This is the Notes directory created for the note_tool application.
 
 Get the tool at https://github.com/raviumadi/note_tool.git

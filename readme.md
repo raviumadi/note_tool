@@ -6,7 +6,7 @@ The Note Tool is a no-frills, command-line solution for those busy workdays when
 
 Your notes are all in one file, and with on-demand or automatic monthly segregation (via cron job), you can keep a structured history of your work, like a digital stack of notepaper. Whether it’s to revisit later or track your daily progress, Note Tool keeps your notes accessible and organized.
 
-![Tool Demo](/demo.png)
+![Tool Demo](/demo1.png)
 
 **The lines are added to the file**
 ![Output Demo](/demo2.png)
@@ -97,11 +97,13 @@ This command creates monthly files (e.g., 2024-11_notes.txt) in the sorted folde
 
 4. **Set Directories**
 
-If you need to customize the location of the Notes directory, you can edit note_tool_config.sh directly. After making changes, reload the shell configuration:
+If you need to customize the location of the Notes directory, you can edit note_tool_config.sh directly located in ~/Documents/Notes/.bin/
+NOTE: .bin is a hidden directory.
+After making changes, reload the shell configuration:
 ```bssh
 source ~/.bashrc  # or source ~/.zshrc if using Zsh
 ```
-5. **See Commands**
+1. **See Commands**
    
 ```bash
 note -h
